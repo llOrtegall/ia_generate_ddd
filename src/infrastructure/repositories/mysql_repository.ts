@@ -1,5 +1,5 @@
 import { User } from '../../domain/entities/user';
-import { UserId, Email, Password } from '../../domain/entities/value-objects';
+import { Email, Password } from '../../domain/entities/value-objects';
 import { UserRepository } from '../../domain/repositories/user-repository';
 import { Database } from '../database/database';
 
@@ -15,8 +15,8 @@ export class SequelizeUserRepository implements UserRepository {
     await this.db.User.create(userData);
   }
 
-  async findById(id: UserId): Promise<User | null> {
-    const userData = await this.db.User.findByPk(id.getValue());
+  async findById(id: string): Promise<User | null> {
+    const userData = await this.db.User.findByPk(id);
     if (!userData) return null;
 
     return this.toDomainEntity(userData);
@@ -36,15 +36,15 @@ export class SequelizeUserRepository implements UserRepository {
     return usersData.map((userData: any): User => this.toDomainEntity(userData));
   }
 
-  async delete(id: UserId): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.db.User.destroy({
-      where: { id: id.getValue() }
+      where: { id: id }
     });
   }
 
   private toDomainEntity(userData: any): User {
     return User.fromPersistence({
-      id: new UserId(userData.id),
+      id: userData.id,
       name: userData.name,
       email: new Email(userData.email),
       password: new Password(userData.password),

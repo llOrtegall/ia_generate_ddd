@@ -8,7 +8,7 @@ export class GetAllUsersUseCase {
     const users = await this.userRepository.findAll();
     
     return users.map(user => ({
-      id: user.id.getValue(),
+      id: user.id,
       name: user.name,
       email: user.email.getValue(),
       createdAt: user.createdAt,

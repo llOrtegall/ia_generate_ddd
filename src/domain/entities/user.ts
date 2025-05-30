@@ -1,7 +1,8 @@
-import { UserId, Email, Password } from './value-objects';
+import { Email, Password } from './value-objects';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface UserProps {
-  id?: UserId;
+  id?: string;
   name: string;
   email: Email;
   password: Password;
@@ -13,7 +14,7 @@ export class User {
   private constructor(private props: UserProps) {}
 
   static create(props: Omit<UserProps, 'id' | 'createdAt' | 'updatedAt'>): User {
-    const id = new UserId(crypto.randomUUID());
+    const id = uuidv4();
     return new User({
       ...props,
       id,
@@ -26,7 +27,7 @@ export class User {
     return new User(props);
   }
 
-  get id(): UserId {
+  get id(): string {
     return this.props.id!;
   }
 
@@ -62,7 +63,7 @@ export class User {
 
   toPlainObject() {
     return {
-      id: this.id.getValue(),
+      id: this.id,
       name: this.name,
       email: this.email.getValue(),
       password: this.password.getValue(),
